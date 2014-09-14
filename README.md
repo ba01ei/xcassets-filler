@@ -1,6 +1,8 @@
 # xcassets-filler
 
-This fills an xcassets bundle (Xcode Asset Catalog) with one image or one solid color.
+Hate to create a bunch of app icon files with different sizes and drag them one by one into asset catalog? Then this might be helpful for you.
+
+xcassets-filler fills an xcassets bundle (Xcode Asset Catalog) with one image or a solid color.
 
 ## Prerequisites
 
