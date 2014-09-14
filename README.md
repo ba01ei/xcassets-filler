@@ -2,6 +2,12 @@
 
 This fills an xcassets bundle (Xcode Asset Catalog) with one image or one solid color.
 
+## Prerequisites
+
+brew install imagemagick
+
+Have a Xcode project with iOS7+ SDK. Make sure there is an asset catalog (Images.xcassets) with image sets in it, and in the image set, all the required options are selected. And make sure that in the targe->general settings, the app icons and launch images are pointed to the right sources.
+
 ## Use cases
 
 ### App Icon
