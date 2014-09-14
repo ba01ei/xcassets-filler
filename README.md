@@ -1,6 +1,6 @@
 # xcassets-filler
 
-This fills an empty xcassets (Xcode Asset Catalog) file with one image or one solid color.
+This fills an xcassets bundle (Xcode Asset Catalog) with one image or one solid color.
 
 ## Use cases
 
@@ -21,3 +21,5 @@ Note: the iTunesArtwork files that are going to be used by iTunesConnect/App Sto
 e.g.
 
     prepare.rb \#111111 ~/project/path/Images.xcassets/LaunchImage.launchimage
+
+Note: unlike appiconset, this image set doesn't provide sizes. So we use a map to determine the sizes. So from time to time we may need to update launch_image_size_map

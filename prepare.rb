@@ -25,9 +25,9 @@ end
 
 parsed = JSON.parse(File.read(asset_json_file))
 images = parsed["images"]
-w = 0
-h = 0
 images.each do |image|
+  w = 0
+  h = 0
   scale = image["scale"].to_i
   size = image["size"]
   if size
@@ -35,17 +35,23 @@ images.each do |image|
     w = sizes[0].to_i
     h = sizes[1].to_i
   else
-    key = image["orientation"] + image["idiom"] + (image["subtype"] or "")
-    map = {"portraitiphone736h" => [414,736] ,
+    key = image["orientation"] + image["idiom"] + (image["subtype"] or "") + (image["extent"]!="full-screen" ? image["extent"] : "")
+    launch_image_size_map = {"portraitiphone736h" => [414,736] ,
       "landscapeiphone736h" => [736,414] ,
       "portraitiphone667h" => [375,667] ,
       "portraitiphone" => [320,480] ,
-      "portraitiphoneretina4" => [320,568]
+      "portraitiphoneretina4" => [320,568],
+      "portraitipad" => [768,1024],
+      "landscapeipad" => [1024,768],
+      "portraitipadto-status-bar" => [768,1004],
+      "landscapeipadto-status-bar" => [1024,748]
       }
-    sizes = map[key]
+    sizes = launch_image_size_map[key]
     if sizes
       w = sizes[0]
       h = sizes[1]
+    else
+      puts "#{key} is not supported for now. Add this into the launch_image_size_map in #{__FILE__}"
     end
   end
   if w > 0 and h > 0
