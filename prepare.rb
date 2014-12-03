@@ -10,12 +10,21 @@ if ARGV.count < 2
   exit(0)
 end
 
-input_file = ARGV[0]
-asset_catalog_folder = ARGV[1]
+if ARGV.count > 2
+  input_files = ARGV[0..ARGV.count - 2]
+else
+  input_file = ARGV[0]
+end
+asset_catalog_folder = ARGV[ARGV.count - 1]
+
+# p "argv: #{ARGV.count}"
+# p "input_file = #{input_file}"
+# p "input_files = #{input_files}"
+# p "asset_catalog_folder = #{asset_catalog_folder}"
 
 asset_json_file = File.join asset_catalog_folder, "Contents.json"
 
-if input_file[0] == "#"
+if input_file and input_file[0] == "#"
   input_color = input_file
   input_file = nil
 end
@@ -59,7 +68,22 @@ images.each do |image|
     actual_h = h * scale
     filename = scale > 1 ? "#{w}x#{h}@#{scale}x.png" : "#{w}x#{h}.png"
     filepath = File.join asset_catalog_folder, filename
-    if input_file
+    if input_files
+      file_to_use = input_files[0]
+      minDiff = 1000.0
+      for file in input_files
+        info = `identify #{file}`.scan(/(\d+)x(\d+)/)[0]
+        file_w = info[0].to_f
+        file_h = info[1].to_f
+        diff = (file_w / file_h - actual_w.to_f / actual_h.to_f).abs
+        if diff < minDiff
+          file_to_use = file
+          minDiff = diff
+        end
+      end
+      cmd = "convert \"#{file_to_use}\" -resize #{actual_w}x#{actual_h}! #{filepath}"
+      system cmd
+    elsif input_file
       `convert "#{input_file}" -resize #{actual_w}x#{actual_h}! #{filepath}`
     elsif input_color
       `convert -size #{actual_w}x#{actual_h} xc:#{input_color} #{filepath}`
