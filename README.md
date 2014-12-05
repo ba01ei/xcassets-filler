@@ -18,16 +18,18 @@ Have a Xcode project with iOS7+ SDK. Make sure there is an asset catalog (Images
 
 e.g.
 
-    prepare.rb ~/Downloads/icon1024x1024.png ~/project/path/Images.xcassets/AppIcon.appiconset
+    prepare.rb ~/project/path/Images.xcassets/AppIcon.appiconset ~/Downloads/icon1024x1024.png
 
 Note: the iTunesArtwork files that are going to be used by iTunesConnect/App Store will also be saved in the folder where Images.xcassets is located.
 
 ### Launch Screen Image
 
-    prepare.rb \#<hex color code> <LaunchImage.launchimage path>
+    prepare.rb <LaunchImage.launchimage path> \#<hex color code>
 
 e.g.
 
-    prepare.rb \#111111 ~/project/path/Images.xcassets/LaunchImage.launchimage
+    prepare.rb ~/project/path/Images.xcassets/LaunchImage.launchimage \#111111
+
+    prepare.rb ~/project/path/Images.xcassets/LaunchImage.launchimage 1024x768.jpg 768x1024.jpg 320x480.png
 
 Note: unlike appiconset, this image set doesn't provide sizes. So we use a map to determine the sizes. So from time to time we may need to update launch_image_size_map

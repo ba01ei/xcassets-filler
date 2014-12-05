@@ -5,17 +5,17 @@ require "json"
 puts ARGV
 
 if ARGV.count < 2
-  puts "\nUsage: prepare.rb <input image path or color started with \\#> <image set path>"
+  puts "\nUsage: prepare.rb <image set path> <input image path or color started with \\#>"
   puts "\n\n"
   exit(0)
 end
 
+asset_catalog_folder = ARGV[0]
 if ARGV.count > 2
-  input_files = ARGV[0..ARGV.count - 2]
+  input_files = ARGV[1..ARGV.count - 1]
 else
-  input_file = ARGV[0]
+  input_file = ARGV[1]
 end
-asset_catalog_folder = ARGV[ARGV.count - 1]
 
 # p "argv: #{ARGV.count}"
 # p "input_file = #{input_file}"
