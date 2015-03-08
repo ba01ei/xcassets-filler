@@ -71,6 +71,8 @@ images.each do |image|
     if input_files
       file_to_use = input_files[0]
       minDiff = 1000.0
+      using_file_w = 0
+      using_file_h = 0
       for file in input_files
         info = `identify #{file}`.scan(/(\d+)x(\d+)/)[0]
         file_w = info[0].to_f
@@ -79,9 +81,19 @@ images.each do |image|
         if diff < minDiff
           file_to_use = file
           minDiff = diff
+          using_file_w = file_w
+          using_file_h = file_h
         end
       end
-      cmd = "convert \"#{file_to_use}\" -resize #{actual_w}x#{actual_h}! #{filepath}"
+      crop_cmd = ""
+      if using_file_w * actual_h > using_file_h * actual_w
+        # file is wider than we want, make it narrower
+        crop_cmd = "-gravity Center -crop #{(using_file_h * actual_w / actual_h).round()}x#{using_file_h}+0+0 +repage"
+      elsif using_file_w * actual_h < using_file_h * actual_w
+        crop_cmd = "-gravity Center -crop #{using_file_w}x#{(using_file_w * actual_h / actual_w).round()}+0+0 +repage"
+      end
+      cmd = "convert \"#{file_to_use}\" #{crop_cmd} -resize #{actual_w}x#{actual_h}! #{filepath}"
+      p cmd
       system cmd
     elsif input_file
       `convert "#{input_file}" -resize #{actual_w}x#{actual_h}! #{filepath}`
