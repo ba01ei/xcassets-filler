@@ -33,6 +33,7 @@ end
 `rm -rf #{File.join asset_catalog_folder, "*.png"}`
 
 parsed = JSON.parse(File.read(asset_json_file))
+puts parsed
 images = parsed["images"]
 images.each do |image|
   w = 0
@@ -41,10 +42,11 @@ images.each do |image|
   size = image["size"]
   if size
     sizes = size.split("x")
-    w = sizes[0].to_i
-    h = sizes[1].to_i
+    w = sizes[0].to_f
+    h = sizes[1].to_f
   else
-    key = image["orientation"] + image["idiom"] + (image["subtype"] or "") + (image["extent"]!="full-screen" ? image["extent"] : "")
+    puts image
+    key = (image["orientation"] or "") + image["idiom"] + (image["subtype"] or "") + ((image["extent"]!="full-screen" ? image["extent"] : "") or "")
     launch_image_size_map = {"portraitiphone736h" => [414,736] ,
       "landscapeiphone736h" => [736,414] ,
       "portraitiphone667h" => [375,667] ,
@@ -64,9 +66,9 @@ images.each do |image|
     end
   end
   if w > 0 and h > 0
-    actual_w = w * scale
-    actual_h = h * scale
-    filename = scale > 1 ? "#{w}x#{h}@#{scale}x.png" : "#{w}x#{h}.png"
+    actual_w = (w * scale).to_i
+    actual_h = (h * scale).to_i
+    filename = scale > 1 ? "#{w.to_i}x#{h.to_i}@#{scale}x.png" : "#{w.to_i}x#{h.to_i}.png"
     filepath = File.join asset_catalog_folder, filename
     if input_files
       file_to_use = input_files[0]
@@ -74,7 +76,7 @@ images.each do |image|
       using_file_w = 0
       using_file_h = 0
       for file in input_files
-        info = `identify #{file}`.scan(/(\d+)x(\d+)/)[0]
+        info = `identify #{file}`.scan(/\s(\d+)x(\d+)\s/)[0]
         file_w = info[0].to_f
         file_h = info[1].to_f
         diff = (file_w / file_h - actual_w.to_f / actual_h.to_f).abs
